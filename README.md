@@ -10,4 +10,4 @@ Bản shop đã dựng theo yêu cầu mới:
 - QR thanh toán.
 - Admin xác nhận thanh toán rồi mới mở file/cấp Key.
 - Admin Test mua FREE.
-- Admin password mặc định cho bản test: `tranvinhzin`.
+- Admin password được đọc từ biến môi trường `ADMIN_PASSWORD` trên Render; không hiển thị trên giao diện.

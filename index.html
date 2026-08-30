@@ -1,12 +1,110 @@
-<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#080b11"><title>Shop Trần Vinh</title><style>
-:root{--bg:#080b11;--card:#111823;--line:#293448;--text:#f5f7fb;--muted:#a8b2c2;--purple:#a855f7;--gold:#f2c14e;--green:#25c45a}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -15%,#26133b 0,#080b11 45%);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{text-decoration:none;color:inherit}.top{position:sticky;top:0;z-index:10;background:#090c12ee;backdrop-filter:blur(16px);border-bottom:1px solid #202b3a}.bar{max-width:1050px;margin:auto;padding:12px 16px;display:flex;align-items:center;gap:12px}.logo{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;border:1px solid var(--gold);background:#0d1118;color:var(--gold);font-weight:950;font-size:18px}.brand{flex:1}.brand b{font-size:20px}.brand small{display:block;color:var(--muted);margin-top:2px}.login{border:1px solid #a855f7;border-radius:11px;padding:10px 14px;color:#e8caff;font-weight:900;background:#a855f722}.hero{max-width:1050px;margin:auto;padding:28px 16px 8px;text-align:center}.hero h1{font-size:32px;margin:0}.hero p{color:var(--muted);margin:9px 0}.shop{max-width:1050px;margin:auto;padding:10px 16px 100px}.cat{margin-top:18px;border:1px solid var(--line);border-radius:20px;padding:17px;background:linear-gradient(180deg,#121a25,#0e141d)}.cat h2{margin:0 0 14px;font-size:24px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.card{border:1px solid #2d394c;border-radius:16px;padding:16px;background:linear-gradient(145deg,#151e2a,#101620)}.icon{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;background:#7c3aed33;color:#d8a8ff;font-size:23px}.head{display:flex;gap:12px}.head h3{margin:0;font-size:19px}.desc{white-space:pre-line;color:var(--muted);margin-top:7px;line-height:1.5}.price{font-size:25px;font-weight:950;color:#c084fc;margin:14px 0 8px}.select{width:100%;padding:12px;border:1px solid #39475d;border-radius:10px;background:#0b1017;color:#fff;margin:6px 0}.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:8px}.actions button{padding:12px;border-radius:11px;border:1px solid #3a4659;background:#0b1017;color:#fff;font-weight:900;font-size:15px}.actions .buy{border:0;background:linear-gradient(135deg,#7c3aed,#a855f7)}.download-panel{display:inline-block;margin-top:8px;color:#d8a8ff;font-weight:900}.pay{display:none;margin-top:18px;border:1px solid #5d3a83;border-radius:18px;padding:18px;background:#111823;text-align:center}.order{font-size:20px;font-weight:950;letter-spacing:1px;background:#090d13;border-radius:10px;padding:12px}.amount{font-size:25px;font-weight:950;color:var(--gold);margin:10px}.qr{width:min(100%,330px);display:block;margin:14px auto;border-radius:12px}.status{color:#a8f0bb}.key{display:none;padding:12px;border-radius:12px;background:#07140b;border:1px solid #1d7e3b;margin-top:12px}.key b{font-size:20px;color:#86efac}.bottom{position:fixed;bottom:0;left:0;right:0;background:#090d14f5;border-top:1px solid #263246;z-index:10}.bottomin{max-width:1050px;margin:auto;display:grid;grid-template-columns:repeat(3,1fr)}.bottom a{text-align:center;padding:10px;color:#b8c1d0;font-size:13px}.bottom span{display:block;font-size:21px;margin-bottom:2px}.notice{padding:13px 15px;border:1px solid #334054;border-radius:13px;background:#0c131c;color:#cbd5e1;margin:15px 0}.notice b{color:#f2c14e}@media(max-width:700px){.grid{grid-template-columns:1fr}.hero h1{font-size:28px}.login{padding:9px 11px}}
-</style></head><body><header class="top"><div class="bar"><div class="logo">TV</div><div class="brand"><b>Shop Trần Vinh</b><small>SHOP TRẦN VINH</small></div><a class="login" href="/account">Đăng nhập</a></div></header><section class="hero"><h1>SHOP TRẦN VINH</h1><p>Chọn sản phẩm → đăng nhập → tạo đơn → quét QR → Admin xác nhận → nhận file/Key.</p></section><main class="shop"><div class="notice"><b>Thanh toán:</b> Chuyển khoản theo đúng số tiền của đơn. Key chỉ được cấp sau khi Admin xác nhận.</div><section class="cat"><h2>AIM PC</h2><div class="grid"><article class="card"><div class="head"><div class="icon">◆</div><div><h3>PANEL VIP</h3><div class="desc">Panel tải miễn phí trước. Key theo thời hạn chỉ cấp sau khi thanh toán được xác nhận.</div></div></div><div class="price">GIÁ KEY</div><select class="select" id="panelEdition"><option value="">Chọn thời hạn key</option><option>1 Day — 25k</option><option>1 Tuần — 130k</option><option>1 Tháng — 240k</option><option>Vĩnh viễn — 500k</option></select><a class="download-panel" href="/files/PANEL-VIP.zip">⇩ Tải panel tại đây</a><div class="actions"><button onclick="details('PANEL VIP')">ⓘ Chi tiết</button><button class="buy" onclick="buyPanel()">🛒 Mua ngay</button></div></article></div></section><section class="cat"><h2>AIM IOS</h2><div class="grid"><article class="card"><div class="head"><div class="icon">◎</div><div><h3>AIM BODY</h3><div class="desc">• đè Đâu cx đỏ\n• cân phòng\n• Ko nên đi rank</div></div></div><div class="price">200.000đ</div><div class="actions"><button onclick="details('AIM BODY')">ⓘ Chi tiết</button><button class="buy" onclick="buy('aim_body_ios')">🛒 Mua ngay</button></div></article></div></section><section class="cat"><h2>AIM ADR</h2><div class="grid"><article class="card"><div class="head"><div class="icon">◈</div><div><h3>DVI XANH - Keo Mờ</h3><div class="desc">• cân Rank\n• Cân phòng</div></div></div><div class="price">70.000đ</div><div class="actions"><button onclick="details('DVI XANH - Keo Mờ')">ⓘ Chi tiết</button><button class="buy" onclick="buy('dvi_xanh_adr')">🛒 Mua ngay</button></div></article></div></section><section class="pay" id="pay"><h2>Thanh toán</h2><div>Mã đơn hàng</div><div class="order" id="order"></div><div class="amount" id="amount"></div><img class="qr" src="/payment-qr.png" alt="Mã QR nhận tiền"><div id="status" class="status">Quét QR và chờ Admin xác nhận.</div><div class="key" id="keybox">🔑 KEY CỦA BẠN<br><b id="key"></b></div><button style="margin-top:12px;padding:11px 16px;border-radius:10px;border:1px solid #3a4659;background:#0b1017;color:#fff;font-weight:900" onclick="check()">Kiểm tra đơn</button></section></main><nav class="bottom"><div class="bottomin"><a href="/"><span>⌂</span>Trang chủ</a><a href="/account"><span>👤</span>Tài khoản</a><a href="/admin"><span>☷</span>Admin</a></div></nav><script>
-let current='';const money=n=>new Intl.NumberFormat('vi-VN').format(n)+'đ';
-async function me(){const r=await fetch('/api/auth/me',{cache:'no-store'});return r.json()}
-async function ensureLogin(){const x=await me();if(!x.authenticated){alert('Bạn cần đăng nhập trước khi mua.');location.href='/account?next='+encodeURIComponent(location.pathname);return false}return true}
-function details(n){alert(n+'\n\nSau khi đăng nhập, bấm Mua ngay để tạo đơn. Thanh toán được xác nhận thì hệ thống mới mở file hoặc cấp Key.');}
-async function buy(productId,edition=''){if(!(await ensureLogin()))return;const r=await fetch('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({productId,edition})});const x=await r.json();if(!r.ok)return alert(x.error||'Không tạo được đơn');showOrder(x)}
-async function buyPanel(){const v=document.getElementById('panelEdition').value;if(!v)return alert('Vui lòng chọn thời hạn key');const edition=v.split(' — ')[0];return buy('panel_vip',edition)}
-function showOrder(x){current=x.orderId;document.getElementById('pay').style.display='block';document.getElementById('order').textContent=x.orderId;document.getElementById('amount').textContent=money(x.amount);document.getElementById('status').textContent='✓ Đã tạo đơn. Chuyển đúng số tiền và chờ Admin xác nhận.';document.getElementById('keybox').style.display='none';document.getElementById('pay').scrollIntoView({behavior:'smooth',block:'center'})}
-async function check(){if(!current)return;const r=await fetch('/api/orders/'+encodeURIComponent(current));const x=await r.json();if(!r.ok)return alert(x.error||'Không kiểm tra được đơn');if(x.paid){document.getElementById('status').textContent='✓ Thanh toán đã được Admin xác nhận.';if(x.key){document.getElementById('keybox').style.display='block';document.getElementById('key').textContent=x.key}else if(x.download){const a=document.createElement('a');a.href='/api/orders/'+encodeURIComponent(current)+'/download';a.textContent='⇩ Tải file đã thanh toán';a.style='display:inline-block;margin-top:12px;padding:12px 16px;background:#25c45a;color:#fff;border-radius:10px;font-weight:900';document.getElementById('status').appendChild(document.createElement('br'));document.getElementById('status').appendChild(a)}}else document.getElementById('status').textContent='⏳ Chưa xác nhận thanh toán. Vui lòng chờ Admin.'}
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080b11"><title>Shop Trần Vinh</title>
+<style>
+:root{--bg:#080b11;--card:#111823;--card2:#0d141e;--line:#293448;--text:#f5f7fb;--muted:#a8b2c2;--purple:#a855f7;--gold:#f2c14e;--green:#25c45a}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 50% -15%,#26133b 0,#080b11 46%);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding-bottom:78px}a{text-decoration:none;color:inherit}
+.top{position:sticky;top:0;z-index:50;background:#090c12f2;backdrop-filter:blur(16px);border-bottom:1px solid #202b3a}.bar{max-width:900px;margin:auto;padding:10px 14px;display:flex;align-items:center;gap:10px}.logo{width:45px;height:45px;border-radius:14px;display:grid;place-items:center;border:1px solid var(--gold);background:#0d1118;color:var(--gold);font-weight:950;font-size:18px;flex:none}.brand{min-width:0;flex:1}.brand b{font-size:20px;white-space:nowrap}.brand small{display:block;color:var(--muted);font-size:12px;margin-top:1px}.login{border:1px solid var(--purple);border-radius:12px;padding:10px 13px;color:#e8caff;font-weight:900;background:#a855f722;white-space:nowrap}
+.hero{max-width:900px;margin:auto;padding:22px 14px 6px}.hero h1{font-size:30px;margin:0 0 5px}.hero p{color:var(--muted);margin:0;line-height:1.45;font-size:14px}.shop{max-width:900px;margin:auto;padding:8px 14px}.notice{padding:12px 14px;border:1px solid #334054;border-radius:14px;background:#0c131c;color:#cbd5e1;margin:12px 0;font-size:14px}.notice b{color:var(--gold)}
+.cat{margin-top:14px;border:1px solid var(--line);border-radius:18px;padding:14px;background:linear-gradient(180deg,#121a25,#0e141d)}.cat h2{margin:0 0 11px;font-size:22px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.card{border:1px solid #2d394c;border-radius:15px;padding:14px;background:linear-gradient(145deg,#151e2a,#101620)}.head{display:flex;gap:10px;align-items:flex-start}.icon{width:45px;height:45px;border-radius:13px;display:grid;place-items:center;background:#7c3aed33;color:#d8a8ff;font-size:21px;flex:none}.head h3{margin:2px 0 0;font-size:18px;line-height:1.2}.desc{white-space:pre-line;color:var(--muted);margin-top:6px;line-height:1.42;font-size:14px}.price{font-size:24px;font-weight:950;color:#c084fc;margin:12px 0 7px}.select{width:100%;padding:11px;border:1px solid #39475d;border-radius:10px;background:#0b1017;color:#fff;margin:3px 0}.download-panel{display:block;margin:8px 0 1px;color:#d8a8ff;font-weight:900;font-size:14px;padding:4px 0}.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.actions button{appearance:none;-webkit-appearance:none;touch-action:manipulation;cursor:pointer;padding:11px 8px;border-radius:11px;border:1px solid #3a4659;background:#0b1017;color:#fff;font-weight:900;font-size:14px;min-height:44px}.actions .buy{border:0;background:linear-gradient(135deg,#7c3aed,#a855f7);box-shadow:0 5px 18px #7c3aed33}.actions button:active{transform:scale(.98)}
+.pay{display:none;margin:16px 0;border:1px solid #5d3a83;border-radius:18px;padding:16px;background:#111823;text-align:center}.pay h2{margin:0 0 10px}.order{font-size:18px;font-weight:950;letter-spacing:.6px;background:#090d13;border-radius:10px;padding:11px;word-break:break-all}.amount{font-size:24px;font-weight:950;color:var(--gold);margin:9px}.qr{width:min(100%,310px);display:block;margin:12px auto;border-radius:12px}.status{color:#a8f0bb;line-height:1.45}.key{display:none;padding:12px;border-radius:12px;background:#07140b;border:1px solid #1d7e3b;margin-top:12px}.key b{font-size:19px;color:#86efac;word-break:break-all}.check{margin-top:11px;padding:11px 16px;border-radius:10px;border:1px solid #3a4659;background:#0b1017;color:#fff;font-weight:900}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:#090d14f7;border-top:1px solid #263246;z-index:60;padding-bottom:env(safe-area-inset-bottom)}.bottomin{max-width:900px;margin:auto;display:grid;grid-template-columns:repeat(3,1fr)}.bottom a{text-align:center;padding:9px 4px;color:#b8c1d0;font-size:12px}.bottom span{display:block;font-size:20px;margin-bottom:1px}
+.toast{position:fixed;left:50%;bottom:86px;transform:translateX(-50%);z-index:100;background:#151d29;border:1px solid #3a4659;padding:11px 14px;border-radius:12px;display:none;max-width:calc(100% - 28px);text-align:center}
+@media(max-width:700px){.grid{grid-template-columns:1fr}.hero h1{font-size:27px}.brand b{font-size:18px}.login{padding:9px 11px}.cat{padding:12px}.card{padding:13px}}
+</style></head>
+<body>
+<header class="top"><div class="bar"><div class="logo">TV</div><div class="brand"><b>Shop Trần Vinh</b><small>SHOP TRẦN VINH</small></div><a class="login" id="loginLink" href="/account">Đăng nhập</a></div></header>
+<section class="hero"><h1>SHOP TRẦN VINH</h1><p>Đăng nhập trước khi mua • Thanh toán QR • Admin xác nhận • Nhận file / Key</p></section>
+<main class="shop">
+<div class="notice"><b>Thanh toán:</b> Chuyển đúng số tiền của đơn. File/Key chỉ mở sau khi Admin xác nhận.</div>
+
+<section class="cat"><h2>AIM PC</h2><div class="grid"><article class="card">
+<div class="head"><div class="icon">◆</div><div><h3>PANEL VIP</h3><div class="desc">Panel tải miễn phí trước. Key theo thời hạn chỉ cấp sau khi thanh toán được xác nhận.</div></div></div>
+<div class="price">GIÁ KEY</div>
+<select class="select" id="panelEdition"><option value="">Chọn thời hạn</option><option value="1 Day">1 Day — 25k</option><option value="1 Tuần">1 Tuần — 130k</option><option value="1 Tháng">1 Tháng — 240k</option><option value="Vĩnh viễn">Vĩnh viễn — 500k</option></select>
+<a class="download-panel" href="/files/PANEL-VIP.zip">⇩ Tải panel tại đây</a>
+<div class="actions"><button type="button" data-details="PANEL VIP">ⓘ Chi tiết</button><button type="button" class="buy" id="buyPanel">🛒 Mua ngay</button></div>
+</article></div></section>
+
+<section class="cat"><h2>AIM IOS</h2><div class="grid"><article class="card">
+<div class="head"><div class="icon">◎</div><div><h3>AIM BODY</h3><div class="desc">• đè Đầu cx đỏ
+• cân phòng
+• Ko nên đi rank</div></div></div>
+<div class="price">200.000đ</div>
+<div class="actions"><button type="button" data-details="AIM BODY">ⓘ Chi tiết</button><button type="button" class="buy" data-buy="aim_body_ios">🛒 Mua ngay</button></div>
+</article></div></section>
+
+<section class="cat"><h2>AIM ADR</h2><div class="grid"><article class="card">
+<div class="head"><div class="icon">◈</div><div><h3>DVI XANH - Keo Mờ</h3><div class="desc">• cân Rank
+• Cân phòng</div></div></div>
+<div class="price">70.000đ</div>
+<div class="actions"><button type="button" data-details="DVI XANH - Keo Mờ">ⓘ Chi tiết</button><button type="button" class="buy" data-buy="dvi_xanh_adr">🛒 Mua ngay</button></div>
+</article></div></section>
+
+<section class="pay" id="pay"><h2>Thanh toán</h2><div>Mã đơn hàng</div><div class="order" id="order"></div><div class="amount" id="amount"></div>
+<img class="qr" src="/payment-qr.png" alt="Mã QR nhận tiền"><div id="status" class="status">Quét QR và chờ Admin xác nhận.</div>
+<div class="key" id="keybox">🔑 KEY CỦA BẠN<br><b id="key"></b></div>
+<button type="button" class="check" id="checkBtn">Kiểm tra đơn</button></section>
+</main>
+<nav class="bottom"><div class="bottomin"><a href="/"><span>⌂</span>Trang chủ</a><a href="/account"><span>👤</span>Tài khoản</a><a href="/admin"><span>☷</span>Admin</a></div></nav>
+<div class="toast" id="toast"></div>
+<script>
+let current='';
+const $=id=>document.getElementById(id);
+const money=n=>new Intl.NumberFormat('vi-VN').format(n)+'đ';
+function toast(msg){const t=$('toast');t.textContent=msg;t.style.display='block';clearTimeout(window.__toast);window.__toast=setTimeout(()=>t.style.display='none',2400);}
+async function me(){const r=await fetch('/api/auth/me',{cache:'no-store'});return r.json();}
+async function ensureLogin(){
+  const x=await me();
+  if(!x.authenticated){
+    toast('Vui lòng đăng nhập trước khi mua.');
+    setTimeout(()=>location.href='/account?next='+encodeURIComponent(location.pathname+location.search),350);
+    return false;
+  }
+  return true;
+}
+function details(n){toast(n+' • Đăng nhập rồi bấm Mua ngay để tạo đơn.');}
+async function buy(productId,edition=''){
+  if(!(await ensureLogin())) return;
+  try{
+    const r=await fetch('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({productId,edition})});
+    const x=await r.json();
+    if(!r.ok) return toast(x.error||'Không tạo được đơn.');
+    showOrder(x);
+  }catch(e){toast('Không kết nối được máy chủ.');}
+}
+$('buyPanel').addEventListener('click',()=>{const v=$('panelEdition').value;if(!v)return toast('Vui lòng chọn thời hạn key.');buy('panel_vip',v);});
+document.querySelectorAll('[data-buy]').forEach(b=>b.addEventListener('click',()=>buy(b.dataset.buy)));
+document.querySelectorAll('[data-details]').forEach(b=>b.addEventListener('click',()=>details(b.dataset.details)));
+function showOrder(x){
+  current=x.orderId;
+  $('pay').style.display='block';
+  $('order').textContent=x.orderId;
+  $('amount').textContent=money(x.amount);
+  $('status').textContent='✓ Đã tạo đơn. Chuyển đúng số tiền theo QR và chờ Admin xác nhận.';
+  $('keybox').style.display='none';
+  $('pay').scrollIntoView({behavior:'smooth',block:'center'});
+}
+async function check(){
+  if(!current)return toast('Chưa có đơn hàng.');
+  try{
+    const r=await fetch('/api/orders/'+encodeURIComponent(current),{cache:'no-store'});
+    const x=await r.json();
+    if(!r.ok)return toast(x.error||'Không kiểm tra được đơn.');
+    if(x.paid){
+      $('status').textContent='✓ Thanh toán đã được Admin xác nhận.';
+      if(x.key){
+        $('keybox').style.display='block';$('key').textContent=x.key;
+      }else if(x.download){
+        if(!document.getElementById('downloadResult')){
+          const a=document.createElement('a');a.id='downloadResult';a.href='/api/orders/'+encodeURIComponent(current)+'/download';a.textContent='⇩ Tải file đã thanh toán';a.style='display:inline-block;margin-top:10px;padding:11px 15px;background:#25c45a;color:#fff;border-radius:10px;font-weight:900';
+          $('status').appendChild(document.createElement('br'));$('status').appendChild(a);
+        }
+      }
+    }else $('status').textContent='⏳ Chưa xác nhận thanh toán. Vui lòng chờ Admin.';
+  }catch(e){toast('Không kết nối được máy chủ.');}
+}
+$('checkBtn').addEventListener('click',check);
+(async()=>{const x=await me();if(x.authenticated){$('loginLink').textContent='Tài khoản';$('loginLink').href='/account';}})();
 </script></body></html>
