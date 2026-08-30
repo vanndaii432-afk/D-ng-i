@@ -11,7 +11,8 @@ const ORDERS = path.join(DATA, 'orders.json');
 const USERS = path.join(DATA, 'users.json');
 const KEYS = path.join(DATA, 'keys.json');
 const PORT = process.env.PORT || 10000;
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'shopvinhzin';
+// Fixed Admin password requested for this build.
+const ADMIN_PASSWORD = 'shopvinhzin';
 const VCB_WEBHOOK_SECRET = process.env.VCB_WEBHOOK_SECRET;
 const SESSION_SECRET = process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex');
 
@@ -31,10 +32,6 @@ const products = {
   aim_body_ios: {
     id:'aim_body_ios', category:'AIM IOS', name:'AIM BODY', type:'file', price:200000,
     description:'• đè Đầu cx đỏ\n• cân phòng\n• Ko nên đi rank', file:'/files/AIM-BODY-IOS.zip'
-  },
-  dvi_xanh_adr: {
-    id:'dvi_xanh_adr', category:'AIM ADR', name:'DVI XANH - Keo Mờ', type:'file', price:70000,
-    description:'• cân Rank\n• Cân phòng', file:'/files/DVI-XANH-KEO-MO-ADR.zip'
   }
 };
 
@@ -80,12 +77,23 @@ function requireUser(req,res){
   if(!u){json(res,401,{error:'LOGIN_REQUIRED'});return null;}
   return u;
 }
+function signAdminSession(){
+  const payload=Buffer.from(JSON.stringify({admin:true,exp:Date.now()+7*24*60*60*1000})).toString('base64url');
+  const sig=crypto.createHmac('sha256',SESSION_SECRET).update('admin.'+payload).digest('base64url');
+  return payload+'.'+sig;
+}
+function adminFromReq(req){
+  const cookie=cookies(req).admin||'';
+  const [payload,sig]=cookie.split('.');
+  if(!payload||!sig) return false;
+  const expected=crypto.createHmac('sha256',SESSION_SECRET).update('admin.'+payload).digest('base64url');
+  if(sig.length!==expected.length || !crypto.timingSafeEqual(Buffer.from(sig),Buffer.from(expected))) return false;
+  try{const x=JSON.parse(Buffer.from(payload,'base64url').toString('utf8')); return x.admin===true && x.exp>Date.now();}catch{return false;}
+}
 function requireAdmin(req,res){
-  if(!ADMIN_PASSWORD || req.headers['x-admin-password']!==ADMIN_PASSWORD){
-    json(res,401,{error:'UNAUTHORIZED'});
-    return false;
-  }
-  return true;
+  if(adminFromReq(req) || req.headers['x-admin-password']===ADMIN_PASSWORD) return true;
+  json(res,401,{error:'UNAUTHORIZED'});
+  return false;
 }
 function safeProduct(id){return products[id]||null;}
 function amountFor(p,edition){return p.type==='panel'?(p.prices[edition]||0):p.price;}
@@ -238,6 +246,21 @@ const server=http.createServer(async (req,res)=>{
 
     if(req.method==='GET'&&p==='/admin') return staticFile(res,'/admin.html');
     if(req.method==='GET'&&p==='/account') return staticFile(res,'/account.html');
+
+    if(req.method==='POST'&&p==='/admin/api/login'){
+      const b=await parseBody(req);
+      if(String(b.password||'')!==ADMIN_PASSWORD) return json(res,401,{error:'Mật khẩu Admin không đúng.'});
+      const t=signAdminSession();
+      res.setHeader('Set-Cookie',`admin=${t}; HttpOnly; Secure; Path=/; SameSite=Lax; Max-Age=604800`);
+      return json(res,200,{ok:true});
+    }
+    if(req.method==='POST'&&p==='/admin/api/logout'){
+      res.setHeader('Set-Cookie','admin=; HttpOnly; Secure; Path=/; SameSite=Lax; Max-Age=0');
+      return json(res,200,{ok:true});
+    }
+    if(req.method==='GET'&&p==='/admin/api/me'){
+      return json(res,200,{authenticated:adminFromReq(req)});
+    }
 
     if(p.startsWith('/admin/api/')){
       if(!requireAdmin(req,res))return;

@@ -18,6 +18,7 @@ const next=new URLSearchParams(location.search).get('next')||'/';
 function switchTab(reg){$('loginTab').classList.toggle('active',!reg);$('regTab').classList.toggle('active',reg);$('loginForm').style.display=reg?'none':'block';$('regForm').style.display=reg?'block':'none';}
 $('loginTab').onclick=()=>switchTab(false);$('regTab').onclick=()=>switchTab(true);
 async function requestJSON(url,options={}){
+  options.credentials='same-origin';
   const controller=new AbortController(); const timer=setTimeout(()=>controller.abort(),10000);
   try{const r=await fetch(url,{...options,signal:controller.signal,credentials:'same-origin'}); let x={}; try{x=await r.json();}catch{} return {r,x};}
   finally{clearTimeout(timer);}

@@ -11,16 +11,16 @@
 <div class="box"><h2>Admin Test</h2><p class="muted">Tạo đơn 0đ để kiểm tra luồng cấp Key/file.</p><select id="prod"><option value="panel_vip">PANEL VIP</option><option value="aim_body_ios">AIM BODY</option></select><button id="test">Mua FREE (0đ)</button><p id="ts" class="muted"></p></div>
 </div></div>
 <script>
-let pass=sessionStorage.getItem('tv_admin')||'';
+
 const $=id=>document.getElementById(id);
 const money=n=>new Intl.NumberFormat('vi-VN').format(n)+'đ';
-async function adminFetch(url,opt={}){opt.headers={...(opt.headers||{}),'x-admin-password':pass};return fetch(url,opt);}
-async function adminLogin(){pass=$('pw').value;const r=await adminFetch('/admin/api/orders');if(!r.ok){pass='';$('ls').textContent='Mật khẩu Admin không đúng.';$('ls').className='muted error';return;}sessionStorage.setItem('tv_admin',pass);show();}
+async function adminFetch(url,opt={}){return fetch(url,{...opt,credentials:'same-origin'});}
+async function adminLogin(){const r=await adminFetch('/admin/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:$('pw').value})});if(!r.ok){$('ls').textContent='Mật khẩu Admin không đúng.';$('ls').className='muted error';return;}show();}
 function show(){$('login').style.display='none';$('dash').style.display='block';$('logout').style.display='block';load();}
 async function load(){const r=await adminFetch('/admin/api/orders',{cache:'no-store'});if(!r.ok)return;const a=await r.json();$('orders').innerHTML=a.length?a.map(o=>`<div class="order"><div class="row"><b>${esc(o.orderId)}</b><span class="${o.status==='PAID'?'paid':'pending'}">${o.status==='PAID'?'ĐÃ THANH TOÁN':'CHỜ THANH TOÁN'}</span></div><div class="row"><span>${esc(o.product)}${o.edition?' • '+esc(o.edition):''}</span><b>${money(o.amount)}</b></div><div class="muted">Khách: ${esc(o.username)}</div>${o.key?`<div class="key">🔑 ${esc(o.key)}</div>`:''}${o.status!=='PAID'?`<button data-confirm="${esc(o.orderId)}">✓ Xác nhận đã nhận tiền</button>`:''}</div>`).join(''):'<p class="muted">Chưa có đơn.</p>';document.querySelectorAll('[data-confirm]').forEach(b=>b.onclick=()=>confirmOrder(b.dataset.confirm));}
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
 async function confirmOrder(id){if(!confirm('Bạn đã kiểm tra giao dịch và nhận đúng số tiền?'))return;const r=await adminFetch('/admin/api/orders/confirm',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({orderId:id})});if(!r.ok){alert('Không xác nhận được.');return;}load();}
 async function test(){const r=await adminFetch('/admin/api/test-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({productId:$('prod').value})});const x=await r.json();$('ts').textContent=r.ok?`Đơn test ${x.orderId} — ${x.status}${x.key?' — Key: '+x.key:''}`:(x.error||'Lỗi');load();}
-$('loginBtn').onclick=adminLogin;$('refresh').onclick=load;$('test').onclick=test;$('logout').onclick=()=>{sessionStorage.removeItem('tv_admin');pass='';location.reload();};
-if(pass)show();
+$('loginBtn').onclick=adminLogin;$('refresh').onclick=load;$('test').onclick=test;$('logout').onclick=async()=>{await adminFetch('/admin/api/logout',{method:'POST'});location.reload();};
+(async()=>{const r=await adminFetch('/admin/api/me',{cache:'no-store'});const x=await r.json();if(x.authenticated)show();})();
 </script></body></html>
