@@ -11,13 +11,10 @@ const ORDERS = path.join(DATA, 'orders.json');
 const USERS = path.join(DATA, 'users.json');
 const KEYS = path.join(DATA, 'keys.json');
 const PORT = process.env.PORT || 10000;
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'tranvinhzin';
 const VCB_WEBHOOK_SECRET = process.env.VCB_WEBHOOK_SECRET;
 const SESSION_SECRET = process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex');
 
-if (!ADMIN_PASSWORD) {
-  console.warn('ADMIN_PASSWORD is not set. Admin login is disabled until the Render environment variable is configured.');
-}
 
 if (!fs.existsSync(DATA)) fs.mkdirSync(DATA, { recursive: true });
 for (const [file, initial] of [[ORDERS, []], [USERS, []], [KEYS, []]]) {

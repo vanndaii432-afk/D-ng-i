@@ -74,9 +74,12 @@ async function buy(productId,edition=''){
     showOrder(x);
   }catch(e){toast('Không kết nối được máy chủ.');}
 }
-$('buyPanel').addEventListener('click',()=>{const v=$('panelEdition').value;if(!v)return toast('Vui lòng chọn thời hạn key.');buy('panel_vip',v);});
-document.querySelectorAll('[data-buy]').forEach(b=>b.addEventListener('click',()=>buy(b.dataset.buy)));
-document.querySelectorAll('[data-details]').forEach(b=>b.addEventListener('click',()=>details(b.dataset.details)));
+document.addEventListener('DOMContentLoaded',()=>{
+  const panelBtn=$('buyPanel');
+  if(panelBtn) panelBtn.addEventListener('click',async()=>{const v=$('panelEdition').value;if(!v)return toast('Vui lòng chọn thời hạn key.');await buy('panel_vip',v);});
+  document.querySelectorAll('[data-buy]').forEach(b=>b.addEventListener('click',async()=>{await buy(b.dataset.buy);}));
+  document.querySelectorAll('[data-details]').forEach(b=>b.addEventListener('click',()=>details(b.dataset.details)));
+});
 function showOrder(x){
   current=x.orderId; clearInterval(window.__poll); window.__poll=setInterval(()=>{if(current)check();},4000);
   $('pay').style.display='block';
@@ -106,6 +109,6 @@ async function check(){
     }else $('status').textContent='⏳ Chưa xác nhận thanh toán. Vui lòng chờ Admin.';
   }catch(e){toast('Không kết nối được máy chủ.');}
 }
-$('checkBtn').addEventListener('click',check);
+document.addEventListener('DOMContentLoaded',()=>{const b=$('checkBtn');if(b)b.addEventListener('click',check);});
 (async()=>{const x=await me();if(x.authenticated){$('loginLink').textContent='Tài khoản';$('loginLink').href='/account';}})();
 </script></body></html>
