@@ -11,7 +11,7 @@ const ORDERS = path.join(DATA, 'orders.json');
 const USERS = path.join(DATA, 'users.json');
 const KEYS = path.join(DATA, 'keys.json');
 const PORT = process.env.PORT || 10000;
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'tranvinhzin';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'shopvinhzin';
 const VCB_WEBHOOK_SECRET = process.env.VCB_WEBHOOK_SECRET;
 const SESSION_SECRET = process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex');
 
