@@ -12,6 +12,8 @@ const USERS = path.join(DATA, 'users.json');
 const KEYS = path.join(DATA, 'keys.json');
 const PORT = process.env.PORT || 10000;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+const VCB_WEBHOOK_SECRET = process.env.VCB_WEBHOOK_SECRET;
+const SESSION_SECRET = process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex');
 
 if (!ADMIN_PASSWORD) {
   console.warn('ADMIN_PASSWORD is not set. Admin login is disabled until the Render environment variable is configured.');
@@ -63,11 +65,18 @@ function cookies(req){
   return out;
 }
 function token(){return crypto.randomBytes(32).toString('hex');}
-const sessions=new Map();
-
+function signSession(username){
+  const payload=Buffer.from(JSON.stringify({u:username,exp:Date.now()+7*24*60*60*1000})).toString('base64url');
+  const sig=crypto.createHmac('sha256',SESSION_SECRET).update(payload).digest('base64url');
+  return payload+'.'+sig;
+}
 function userFromReq(req){
-  const t=cookies(req).session;
-  return t?sessions.get(t):null;
+  const raw=cookies(req).session||'';
+  const [payload,sig]=raw.split('.');
+  if(!payload||!sig) return null;
+  const expected=crypto.createHmac('sha256',SESSION_SECRET).update(payload).digest('base64url');
+  if(sig.length!==expected.length || !crypto.timingSafeEqual(Buffer.from(sig),Buffer.from(expected))) return null;
+  try{const x=JSON.parse(Buffer.from(payload,'base64url').toString('utf8')); if(!x.u||!x.exp||Date.now()>x.exp)return null; return {username:x.u};}catch{return null;}
 }
 function requireUser(req,res){
   const u=userFromReq(req);
@@ -156,9 +165,8 @@ const server=http.createServer(async (req,res)=>{
       if(users.some(x=>x.username.toLowerCase()===username.toLowerCase())) return json(res,409,{error:'Tài khoản đã tồn tại.'});
       users.push({username,passwordHash:crypto.createHash('sha256').update(password).digest('hex'),createdAt:new Date().toISOString()});
       writeJson(USERS,users);
-      const t=token();
-      sessions.set(t,{username});
-      res.setHeader('Set-Cookie',`session=${t}; HttpOnly; Path=/; SameSite=Lax; Max-Age=604800`);
+      const t=signSession(username);
+      res.setHeader('Set-Cookie',`session=${t}; HttpOnly; Secure; Path=/; SameSite=Lax; Max-Age=604800`);
       return json(res,200,{ok:true,user:{username}});
     }
     if(req.method==='POST'&&p==='/api/auth/login'){
@@ -167,15 +175,12 @@ const server=http.createServer(async (req,res)=>{
       const hash=crypto.createHash('sha256').update(String(b.password||'')).digest('hex');
       const user=readJson(USERS).find(x=>x.username===username&&x.passwordHash===hash);
       if(!user) return json(res,401,{error:'Sai tài khoản hoặc mật khẩu.'});
-      const t=token();
-      sessions.set(t,{username});
-      res.setHeader('Set-Cookie',`session=${t}; HttpOnly; Path=/; SameSite=Lax; Max-Age=604800`);
+      const t=signSession(username);
+      res.setHeader('Set-Cookie',`session=${t}; HttpOnly; Secure; Path=/; SameSite=Lax; Max-Age=604800`);
       return json(res,200,{ok:true,user:{username}});
     }
     if(req.method==='POST'&&p==='/api/auth/logout'){
-      const c=cookies(req);
-      if(c.session)sessions.delete(c.session);
-      res.setHeader('Set-Cookie','session=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0');
+      res.setHeader('Set-Cookie','session=; HttpOnly; Secure; Path=/; SameSite=Lax; Max-Age=0');
       return json(res,200,{ok:true});
     }
 
@@ -184,8 +189,35 @@ const server=http.createServer(async (req,res)=>{
       const b=await parseBody(req);
       try{
         const o=createOrder(user,String(b.productId||''),String(b.edition||''));
-        return json(res,201,{orderId:o.orderId,amount:o.amount,status:o.status,product:o.product,edition:o.edition});
+        return json(res,201,{orderId:o.orderId,amount:o.amount,status:o.status,product:o.product,edition:o.edition,transferContent:o.orderId});
       }catch(e){return json(res,400,{error:e.message});}
+    }
+
+    // Vietcombank/Open Banking webhook adapter. Configure VCB_WEBHOOK_SECRET
+    // and point the approved bank/payment provider callback to this endpoint.
+    if(req.method==='POST'&&p==='/api/payments/vietcombank'){
+      if(!VCB_WEBHOOK_SECRET) return json(res,503,{error:'VCB_WEBHOOK_NOT_CONFIGURED'});
+      const supplied=String(req.headers['x-webhook-secret']||'');
+      const a=Buffer.from(supplied); const b=Buffer.from(VCB_WEBHOOK_SECRET);
+      if(a.length!==b.length || !crypto.timingSafeEqual(a,b)) return json(res,401,{error:'INVALID_WEBHOOK_SECRET'});
+      const body=await parseBody(req);
+      const tx=body.transaction||body.data||body;
+      const amount=Number(tx.amount ?? tx.creditAmount ?? tx.value ?? 0);
+      const content=String(tx.content ?? tx.description ?? tx.transferContent ?? tx.addDescription ?? '').toUpperCase();
+      const reference=String(tx.referenceNumber ?? tx.transactionCode ?? tx.transId ?? tx.id ?? '').trim();
+      if(!amount || !content) return json(res,400,{error:'INVALID_TRANSACTION_PAYLOAD'});
+      const orders=readJson(ORDERS);
+      const orderIdMatch=content.match(/\b(TV[A-Z0-9]+)\b/);
+      if(!orderIdMatch) return json(res,200,{ok:true,matched:false,reason:'ORDER_ID_NOT_FOUND'});
+      const order=orders.find(o=>o.orderId===orderIdMatch[1]);
+      if(!order) return json(res,200,{ok:true,matched:false,reason:'ORDER_NOT_FOUND'});
+      if(order.status==='PAID') return json(res,200,{ok:true,matched:true,alreadyPaid:true,orderId:order.orderId});
+      if(Number(order.amount)!==amount) return json(res,200,{ok:true,matched:false,reason:'AMOUNT_MISMATCH',orderId:order.orderId,expected:order.amount,received:amount});
+      if(reference && orders.some(o=>o.paymentReference===reference && o.orderId!==order.orderId)) return json(res,409,{error:'DUPLICATE_TRANSACTION_REFERENCE'});
+      order.status='PAID'; order.paidAt=new Date().toISOString(); order.paymentReference=reference||null;
+      order.paymentSource='VIETCOMBANK_WEBHOOK'; order.key=issueKey(order); order.download=order.productId!=='panel_vip';
+      writeJson(ORDERS,orders);
+      return json(res,200,{ok:true,matched:true,orderId:order.orderId,status:order.status,key:order.key,download:order.download});
     }
 
     // Download route must be checked before the generic /api/orders/:id route.

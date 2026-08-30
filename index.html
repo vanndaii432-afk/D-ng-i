@@ -8,7 +8,7 @@
 .hero{max-width:900px;margin:auto;padding:22px 14px 6px}.hero h1{font-size:30px;margin:0 0 5px}.hero p{color:var(--muted);margin:0;line-height:1.45;font-size:14px}.shop{max-width:900px;margin:auto;padding:8px 14px}.notice{padding:12px 14px;border:1px solid #334054;border-radius:14px;background:#0c131c;color:#cbd5e1;margin:12px 0;font-size:14px}.notice b{color:var(--gold)}
 .cat{margin-top:14px;border:1px solid var(--line);border-radius:18px;padding:14px;background:linear-gradient(180deg,#121a25,#0e141d)}.cat h2{margin:0 0 11px;font-size:22px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .card{border:1px solid #2d394c;border-radius:15px;padding:14px;background:linear-gradient(145deg,#151e2a,#101620)}.head{display:flex;gap:10px;align-items:flex-start}.icon{width:45px;height:45px;border-radius:13px;display:grid;place-items:center;background:#7c3aed33;color:#d8a8ff;font-size:21px;flex:none}.head h3{margin:2px 0 0;font-size:18px;line-height:1.2}.desc{white-space:pre-line;color:var(--muted);margin-top:6px;line-height:1.42;font-size:14px}.price{font-size:24px;font-weight:950;color:#c084fc;margin:12px 0 7px}.select{width:100%;padding:11px;border:1px solid #39475d;border-radius:10px;background:#0b1017;color:#fff;margin:3px 0}.download-panel{display:block;margin:8px 0 1px;color:#d8a8ff;font-weight:900;font-size:14px;padding:4px 0}.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.actions button{appearance:none;-webkit-appearance:none;touch-action:manipulation;cursor:pointer;padding:11px 8px;border-radius:11px;border:1px solid #3a4659;background:#0b1017;color:#fff;font-weight:900;font-size:14px;min-height:44px}.actions .buy{border:0;background:linear-gradient(135deg,#7c3aed,#a855f7);box-shadow:0 5px 18px #7c3aed33}.actions button:active{transform:scale(.98)}
-.pay{display:none;margin:16px 0;border:1px solid #5d3a83;border-radius:18px;padding:16px;background:#111823;text-align:center}.pay h2{margin:0 0 10px}.order{font-size:18px;font-weight:950;letter-spacing:.6px;background:#090d13;border-radius:10px;padding:11px;word-break:break-all}.amount{font-size:24px;font-weight:950;color:var(--gold);margin:9px}.qr{width:min(100%,310px);display:block;margin:12px auto;border-radius:12px}.status{color:#a8f0bb;line-height:1.45}.key{display:none;padding:12px;border-radius:12px;background:#07140b;border:1px solid #1d7e3b;margin-top:12px}.key b{font-size:19px;color:#86efac;word-break:break-all}.check{margin-top:11px;padding:11px 16px;border-radius:10px;border:1px solid #3a4659;background:#0b1017;color:#fff;font-weight:900}
+.pay{display:none;margin:16px 0;border:1px solid #5d3a83;border-radius:18px;padding:16px;background:#111823;text-align:center}.pay h2{margin:0 0 10px}.order{font-size:18px;font-weight:950;letter-spacing:.6px;background:#090d13;border-radius:10px;padding:11px;word-break:break-all}.amount{font-size:24px;font-weight:950;color:var(--gold);margin:9px}.qr{width:min(100%,420px);max-height:560px;object-fit:contain;display:block;margin:12px auto;border-radius:12px;background:#fff}.status{color:#a8f0bb;line-height:1.45}.key{display:none;padding:12px;border-radius:12px;background:#07140b;border:1px solid #1d7e3b;margin-top:12px}.key b{font-size:19px;color:#86efac;word-break:break-all}.check{margin-top:11px;padding:11px 16px;border-radius:10px;border:1px solid #3a4659;background:#0b1017;color:#fff;font-weight:900}
 .bottom{position:fixed;bottom:0;left:0;right:0;background:#090d14f7;border-top:1px solid #263246;z-index:60;padding-bottom:env(safe-area-inset-bottom)}.bottomin{max-width:900px;margin:auto;display:grid;grid-template-columns:repeat(3,1fr)}.bottom a{text-align:center;padding:9px 4px;color:#b8c1d0;font-size:12px}.bottom span{display:block;font-size:20px;margin-bottom:1px}
 .toast{position:fixed;left:50%;bottom:86px;transform:translateX(-50%);z-index:100;background:#151d29;border:1px solid #3a4659;padding:11px 14px;border-radius:12px;display:none;max-width:calc(100% - 28px);text-align:center}
 @media(max-width:700px){.grid{grid-template-columns:1fr}.hero h1{font-size:27px}.brand b{font-size:18px}.login{padding:9px 11px}.cat{padding:12px}.card{padding:13px}}
@@ -42,8 +42,8 @@
 <div class="actions"><button type="button" data-details="DVI XANH - Keo Mờ">ⓘ Chi tiết</button><button type="button" class="buy" data-buy="dvi_xanh_adr">🛒 Mua ngay</button></div>
 </article></div></section>
 
-<section class="pay" id="pay"><h2>Thanh toán</h2><div>Mã đơn hàng</div><div class="order" id="order"></div><div class="amount" id="amount"></div>
-<img class="qr" src="/payment-qr.png" alt="Mã QR nhận tiền"><div id="status" class="status">Quét QR và chờ Admin xác nhận.</div>
+<section class="pay" id="pay"><h2>Thanh toán</h2><div>Mã đơn hàng</div><div class="order" id="order"></div><div class="amount" id="amount"></div><div class="transfer">Nội dung chuyển khoản: <b id="transferContent"></b></div>
+<img class="qr" src="/payment-qr.png" alt="Mã QR Vietcombank nhận tiền"><div style="color:#cbd5e1;font-size:13px;line-height:1.4">Quét mã QR Vietcombank ở trên và chuyển đúng số tiền của đơn.</div><div id="status" class="status">Quét QR và chờ Admin xác nhận.</div>
 <div class="key" id="keybox">🔑 KEY CỦA BẠN<br><b id="key"></b></div>
 <button type="button" class="check" id="checkBtn">Kiểm tra đơn</button></section>
 </main>
@@ -78,10 +78,11 @@ $('buyPanel').addEventListener('click',()=>{const v=$('panelEdition').value;if(!
 document.querySelectorAll('[data-buy]').forEach(b=>b.addEventListener('click',()=>buy(b.dataset.buy)));
 document.querySelectorAll('[data-details]').forEach(b=>b.addEventListener('click',()=>details(b.dataset.details)));
 function showOrder(x){
-  current=x.orderId;
+  current=x.orderId; clearInterval(window.__poll); window.__poll=setInterval(()=>{if(current)check();},4000);
   $('pay').style.display='block';
   $('order').textContent=x.orderId;
   $('amount').textContent=money(x.amount);
+  $('transferContent').textContent=x.transferContent||x.orderId;
   $('status').textContent='✓ Đã tạo đơn. Chuyển đúng số tiền theo QR và chờ Admin xác nhận.';
   $('keybox').style.display='none';
   $('pay').scrollIntoView({behavior:'smooth',block:'center'});
@@ -93,7 +94,7 @@ async function check(){
     const x=await r.json();
     if(!r.ok)return toast(x.error||'Không kiểm tra được đơn.');
     if(x.paid){
-      $('status').textContent='✓ Thanh toán đã được Admin xác nhận.';
+      clearInterval(window.__poll); $('status').textContent='✓ Thanh toán đã được xác nhận.';
       if(x.key){
         $('keybox').style.display='block';$('key').textContent=x.key;
       }else if(x.download){
