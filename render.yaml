@@ -5,3 +5,9 @@ services:
     buildCommand: npm install
     startCommand: npm start
     healthCheckPath: /health
+    envVars:
+      - key: DATA_DIR
+        value: /var/data
+    # Persistent storage keeps accounts, orders and purchase history after redeploy/restart.
+    # Render persistent disks require a paid web service. If you already have a disk,
+    # set its mount path to /var/data in the Render Dashboard.

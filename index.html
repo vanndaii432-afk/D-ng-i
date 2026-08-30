@@ -17,7 +17,7 @@
 <header class="top"><div class="bar"><div class="logo">TV</div><div class="brand"><b>Shop Trần Vinh</b><small>SHOP TRẦN VINH</small></div><a class="login" id="loginLink" href="/account">Đăng nhập</a></div></header>
 <section class="hero"><h1>SHOP TRẦN VINH</h1><p>Đăng nhập trước khi mua • Thanh toán QR • Admin xác nhận • Nhận file / Key</p></section>
 <main class="shop">
-<div class="notice"><b>Thanh toán:</b> Chuyển đúng số tiền của đơn. File/Key chỉ mở sau khi Admin xác nhận.</div>
+<div class="notice"><b>Thanh toán:</b> Đăng nhập → bấm <b>Mua ngay</b> → QR Vietcombank hiện ngay → chuyển đúng số tiền. Sau khi Admin xác nhận đã nhận tiền, hệ thống tự mở nút tải file/hiện Key.</div>
 
 <section class="cat"><h2>AIM PC</h2><div class="grid"><article class="card">
 <div class="head"><div class="icon">◆</div><div><h3>PANEL VIP</h3><div class="desc">Panel tải miễn phí trước. Key theo thời hạn chỉ cấp sau khi thanh toán được xác nhận.</div></div></div>
@@ -40,7 +40,7 @@
 <section class="pay" id="pay"><h2>Thanh toán</h2><div>Mã đơn hàng</div><div class="order" id="order"></div><div class="amount" id="amount"></div><div class="transfer">Nội dung chuyển khoản: <b id="transferContent"></b></div>
 <img class="qr" src="/payment-qr.png" alt="Mã QR Vietcombank nhận tiền"><div style="color:#cbd5e1;font-size:13px;line-height:1.4">Quét mã QR Vietcombank ở trên và chuyển đúng số tiền của đơn.</div><div id="status" class="status">Quét QR và chờ Admin xác nhận.</div>
 <div class="key" id="keybox">🔑 KEY CỦA BẠN<br><b id="key"></b></div>
-<button type="button" class="check" id="checkBtn">Kiểm tra đơn</button></section>
+<button type="button" class="check" id="checkBtn">✓ Tôi đã thanh toán — kiểm tra đơn</button></section>
 </main>
 <nav class="bottom"><div class="bottomin"><a href="/"><span>⌂</span>Trang chủ</a><a href="/account"><span>👤</span>Tài khoản</a><a href="/admin"><span>☷</span>Admin</a></div></nav>
 <div class="toast" id="toast"></div>
@@ -53,21 +53,25 @@ async function me(){const r=await fetch('/api/auth/me',{cache:'no-store'});retur
 async function ensureLogin(){
   const x=await me();
   if(!x.authenticated){
-    toast('Vui lòng đăng nhập trước khi mua.');
+    toast('Bạn cần có tài khoản và đăng nhập trước khi mua.');
     setTimeout(()=>location.href='/account?next='+encodeURIComponent(location.pathname+location.search),350);
     return false;
   }
   return true;
 }
-function details(n){toast(n+' • Đăng nhập rồi bấm Mua ngay để tạo đơn.');}
+function details(n){toast(n+' • Đăng ký/đăng nhập rồi bấm Mua ngay để tạo đơn.');}
 async function buy(productId,edition=''){
   if(!(await ensureLogin())) return;
+  const buttons=[...document.querySelectorAll('[data-buy],#buyPanel')];
+  buttons.forEach(b=>b.disabled=true);
   try{
-    const r=await fetch('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({productId,edition})});
-    const x=await r.json();
+    const r=await fetch('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({productId,edition})});
+    const x=await r.json().catch(()=>({}));
+    if(r.status===401){ toast('Phiên đăng nhập đã hết. Vui lòng đăng nhập lại.'); setTimeout(()=>location.href='/account?next='+encodeURIComponent(location.pathname),500); return; }
     if(!r.ok) return toast(x.error||'Không tạo được đơn.');
     showOrder(x);
   }catch(e){toast('Không kết nối được máy chủ.');}
+  finally{buttons.forEach(b=>b.disabled=false);}
 }
 document.addEventListener('DOMContentLoaded',()=>{
   const panelBtn=$('buyPanel');
@@ -92,7 +96,7 @@ async function check(){
     const x=await r.json();
     if(!r.ok)return toast(x.error||'Không kiểm tra được đơn.');
     if(x.paid){
-      clearInterval(window.__poll); $('status').textContent='✓ Thanh toán đã được xác nhận.';
+      clearInterval(window.__poll); $('status').textContent='✓ Thanh toán đã được xác nhận — đơn hàng đã mở quyền nhận sản phẩm.';
       if(x.key){
         $('keybox').style.display='block';$('key').textContent=x.key;
       }else if(x.download){

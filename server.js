@@ -6,11 +6,13 @@ const { URL } = require('url');
 
 const ROOT = __dirname;
 const PUBLIC = path.join(ROOT, 'public');
-const DATA = path.join(ROOT, 'data');
+// Use Render persistent disk when DATA_DIR is configured; otherwise keep local data/ for development.
+const DATA = process.env.DATA_DIR ? path.resolve(process.env.DATA_DIR) : path.join(ROOT, 'data');
 const ORDERS = path.join(DATA, 'orders.json');
 const USERS = path.join(DATA, 'users.json');
 const KEYS = path.join(DATA, 'keys.json');
 const PORT = process.env.PORT || 10000;
+const SHOP_NAME = 'Shop Trần Vinh';
 // Fixed Admin password requested for this build.
 const ADMIN_PASSWORD = 'shopvinhzin';
 const VCB_WEBHOOK_SECRET = process.env.VCB_WEBHOOK_SECRET;
@@ -135,7 +137,7 @@ function confirmOrder(orderId){
   if(o.status!=='PAID'){
     o.status='PAID'; o.paidAt=new Date().toISOString();
     o.key=issueKey(o);
-    o.download=o.productId!=='panel_vip';
+    o.download=!!products[o.productId]?.file;
     writeJson(ORDERS,orders);
   }
   return o;
@@ -155,7 +157,7 @@ const server=http.createServer(async (req,res)=>{
   const u=new URL(req.url,'http://localhost');
   const p=u.pathname;
   try{
-    if(req.method==='GET'&&p==='/health') return json(res,200,{ok:true,shop:'Trần Vinh'});
+    if(req.method==='GET'&&p==='/health') return json(res,200,{ok:true,shop:SHOP_NAME,version:'FIX-PAYMENT-QR-FILE-V3-REDOWNLOAD'});
     if(req.method==='GET'&&p==='/api/products') return json(res,200,Object.fromEntries(Object.entries(products).map(([k,v])=>[k,productPublic(v)])));
     if(req.method==='GET'&&p==='/api/auth/me'){
       const user=userFromReq(req);
@@ -189,12 +191,26 @@ const server=http.createServer(async (req,res)=>{
       return json(res,200,{ok:true});
     }
 
+    // Customer purchase history. Paid orders remain available for re-download later.
+    if(req.method==='GET'&&p==='/api/my-orders'){
+      const user=requireUser(req,res); if(!user)return;
+      const orders=readJson(ORDERS)
+        .filter(o=>o.username===user.username)
+        .map(o=>({
+          orderId:o.orderId, product:o.product, amount:o.amount, edition:o.edition||'',
+          status:o.status, createdAt:o.createdAt, paidAt:o.paidAt||null,
+          paid:o.status==='PAID', download:o.status==='PAID'&&!!products[o.productId]?.file,
+          key:o.status==='PAID'?o.key:null
+        }));
+      return json(res,200,orders);
+    }
+
     if(req.method==='POST'&&p==='/api/orders'){
       const user=requireUser(req,res); if(!user)return;
       const b=await parseBody(req);
       try{
         const o=createOrder(user,String(b.productId||''),String(b.edition||''));
-        return json(res,201,{orderId:o.orderId,amount:o.amount,status:o.status,product:o.product,edition:o.edition,transferContent:o.orderId});
+        return json(res,201,{ok:true,orderId:o.orderId,amount:o.amount,status:o.status,product:o.product,edition:o.edition,transferContent:o.orderId,payment:{bank:'Vietcombank',qr:'/payment-qr.png',instruction:'Chuyển đúng số tiền và dùng mã đơn làm nội dung chuyển khoản.'}});
       }catch(e){return json(res,400,{error:e.message});}
     }
 
@@ -220,7 +236,7 @@ const server=http.createServer(async (req,res)=>{
       if(Number(order.amount)!==amount) return json(res,200,{ok:true,matched:false,reason:'AMOUNT_MISMATCH',orderId:order.orderId,expected:order.amount,received:amount});
       if(reference && orders.some(o=>o.paymentReference===reference && o.orderId!==order.orderId)) return json(res,409,{error:'DUPLICATE_TRANSACTION_REFERENCE'});
       order.status='PAID'; order.paidAt=new Date().toISOString(); order.paymentReference=reference||null;
-      order.paymentSource='VIETCOMBANK_WEBHOOK'; order.key=issueKey(order); order.download=order.productId!=='panel_vip';
+      order.paymentSource='VIETCOMBANK_WEBHOOK'; order.key=issueKey(order); order.download=!!products[order.productId]?.file;
       writeJson(ORDERS,orders);
       return json(res,200,{ok:true,matched:true,orderId:order.orderId,status:order.status,key:order.key,download:order.download});
     }
